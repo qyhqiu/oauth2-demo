@@ -1,0 +1,215 @@
+@use "@/styles/variables" as *;
+
+.user-detail-page {
+  .back-btn {
+    margin-bottom: $spacing-md;
+  }
+}
+
+// ============ 左右布局 ============
+.user-detail-layout {
+  display: flex;
+  gap: $spacing-lg;
+  align-items: flex-start;
+  min-height: 600px;
+}
+
+// 左侧面板
+.user-detail-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: $radius-md;
+  border: 1px solid $border-color;
+  overflow: hidden;
+}
+
+.sidebar-user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-lg $spacing-md;
+  border-bottom: 1px solid $border-color;
+}
+
+.sidebar-menu {
+  padding: $spacing-sm 0;
+}
+
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px $spacing-md;
+  font-size: 14px;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+
+  &:hover {
+    color: $primary-color;
+    background: rgba($primary-color, 0.04);
+  }
+
+  &.active {
+    color: $primary-color;
+    background: rgba($primary-color, 0.06);
+    border-left-color: $primary-color;
+    font-weight: 600;
+  }
+
+  .sidebar-menu-icon {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+// 右侧内容区
+.user-detail-content {
+  flex: 1;
+  min-width: 0;
+}
+
+// 安全等级 Tab
+.security-section {
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $border-color;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.security-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+}
+
+// 原始 JSON viewer 容器
+.user-detail__json-viewer {
+  background: $bg-page;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  max-height: 600px;
+  overflow: auto;
+}
+
+// 原始 JSON Tab
+.raw-json-section {
+  .json-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: $spacing-sm;
+  }
+
+  pre {
+    background: $bg-page;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    font-size: 12px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    overflow-x: auto;
+    max-height: 600px;
+    line-height: 1.6;
+  }
+}
+
+// 修改密码弹窗
+.pwd-modal {
+  .ant-form-item {
+    margin-bottom: $spacing-md;
+  }
+}
+
+// ============ 授权管理 Tab - 已访问应用卡片网格 ============
+// 由于后端没有显式的「撤销单个应用授权」接口（loginApps 是基于 LoginLog 去重得来的访问历史），
+// 卡片只做展示 + 点击跳转应用详情，不提供删除按钮。
+.user-app-card {
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  height: 100%;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba($primary-color, 0.15);
+    border-color: $primary-color;
+    transform: translateY(-2px);
+  }
+
+  &__top {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+    margin-bottom: $spacing-md;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    background: $primary-light;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: $primary-color;
+    flex-shrink: 0;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.3;
+    word-break: break-all;
+  }
+
+  &__bottom {
+    border-top: 1px dashed $border-color;
+    padding-top: $spacing-sm;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__field {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  &__field-label {
+    color: $text-tertiary;
+    flex-shrink: 0;
+    min-width: 56px;
+  }
+
+  &__field-value {
+    color: $text-secondary;
+    word-break: break-all;
+    font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace;
+    flex: 1;
+  }
+}

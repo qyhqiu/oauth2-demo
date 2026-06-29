@@ -1,0 +1,73 @@
+@use "@/styles/variables" as *;
+
+// 分组详情 - 已授权应用 卡片网格（参考 apps/AppGridCard 风格，简化为不带图表的紧凑卡片）
+.group-app-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  height: 100%;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba($primary-color, 0.15);
+    border-color: $primary-color;
+    transform: translateY(-2px);
+
+    .group-app-card__remove {
+      opacity: 1;
+    }
+  }
+
+  &__top {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    background: $primary-light;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: $primary-color;
+    flex-shrink: 0;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.3;
+    word-break: break-all;
+  }
+
+  &__client-id {
+    font-size: 11px;
+    color: $text-tertiary;
+    font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace;
+    word-break: break-all;
+    line-height: 1.4;
+  }
+
+  &__remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+}

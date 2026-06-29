@@ -1,0 +1,156 @@
+.console-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #5b50e8 0%, #3a32a0 100%);
+  position: relative;
+  overflow: hidden;
+
+  &__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &__circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+
+    &--1 {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      right: -100px;
+    }
+
+    &--2 {
+      width: 300px;
+      height: 300px;
+      bottom: -80px;
+      left: -80px;
+    }
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    padding: 0 20px;
+  }
+
+  &__brand {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #fff;
+  }
+
+  &__brand-icon {
+    font-size: 56px;
+    color: #fff;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  &__brand-title {
+    color: #fff !important;
+    margin: 8px 0 4px !important;
+  }
+
+  &__brand-sub {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  &__card {
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  }
+
+  &__submit {
+    height: 44px;
+    background: linear-gradient(135deg, #5b50e8 0%, #3a32a0 100%);
+    border: none;
+    font-weight: 600;
+  }
+
+  &__oauth2-btn {
+    height: 44px;
+    border: 1px solid #d9d9d9;
+    color: #5b50e8;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      border-color: #5b50e8;
+      color: #5b50e8;
+      background: #f5f3ff;
+    }
+  }
+
+  // OAuth2 已登录提示卡（绿色，强调"无需输密码即可进入"）
+  &__oauth2-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, rgba(82, 196, 26, 0.08) 0%, rgba(82, 196, 26, 0.02) 100%);
+    border: 1px solid rgba(82, 196, 26, 0.25);
+    border-radius: 10px;
+
+    &--loading {
+      justify-content: center;
+      background: #fafafa;
+      border-color: #f0f0f0;
+    }
+  }
+
+  &__oauth2-card-icon {
+    font-size: 28px;
+    color: #52c41a;
+    flex-shrink: 0;
+  }
+
+  &__oauth2-card-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__oauth2-card-title {
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+  }
+
+  &__oauth2-card-user {
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+  }
+
+  &__oauth2-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__oauth2-card-continue {
+    background: #52c41a !important;
+    border-color: #52c41a !important;
+    font-weight: 600;
+
+    &:hover {
+      background: #389e0d !important;
+      border-color: #389e0d !important;
+    }
+  }
+}

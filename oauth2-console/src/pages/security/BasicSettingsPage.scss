@@ -1,0 +1,47 @@
+@use "@/styles/variables" as *;
+
+.basic-settings-page {
+  &__header {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: $spacing-lg;
+    border-radius: $radius-md;
+    margin-bottom: $spacing-md;
+    box-shadow: $shadow-card;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    background: $primary-light;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary-color;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  &__card {
+    box-shadow: $shadow-card;
+
+    .ant-tabs-nav {
+      margin-bottom: $spacing-lg;
+    }
+  }
+
+  &__tab {
+    padding: $spacing-md 0;
+  }
+
+  &__section-header {
+    margin-bottom: $spacing-md;
+
+    .anticon {
+      color: $primary-color;
+      font-size: 16px;
+    }
+  }
+}

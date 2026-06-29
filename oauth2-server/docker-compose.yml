@@ -1,0 +1,60 @@
+services:
+  oauth2-server:
+    build: .
+    container_name: oauth2-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.docker
+    volumes:
+      - oauth2-keys:/app/src/keys
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - oauth2-network
+
+  mongo:
+    image: mongo:7
+    container_name: oauth2-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - oauth2-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: oauth2-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - oauth2-network
+
+volumes:
+  oauth2-keys:
+  mongo-data:
+  redis-data:
+
+networks:
+  oauth2-network:
+    driver: bridge

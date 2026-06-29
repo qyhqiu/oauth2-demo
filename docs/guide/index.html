@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="KEYWords" contect="koa CICD node.js">
+  <meta name="description" content="NodeJS 版 API">
+  <title>CICD</title>
+  <link rel="icon" href="favicon.ico">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsify/4.12.2/themes/vue.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    var num = 0;
+    mermaid.initialize({ startOnLoad: false });
+
+    window.$docsify = {
+      name: '埋点日志监控服务',
+      repo: 'https://gitee.com/qiuyaohong/cicd-server.git',
+      coverpage: false,
+      basePath: '',
+    }
+  </script>
+  <!-- Docsify v4 -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/docsify@4"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docsify/4.12.2/docsify.min.js"  referrerpolicy="no-referrer"></script>
+  <!-- <script src="//cdn.jsdelivr.net/npm/prismjs@1.24.1/components/prism-json.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-json.min.js" referrerpolicy="no-referrer"></script>
+
+  <script src="https://unpkg.com/mermaid/dist/mermaid.js"></script>
+  <script src="https://unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
+
+  <script>
+    mermaid.initialize({
+      startOnload:true,
+      securityLevel:'loose',
+      logLevel:1
+    })
+    
+    mermaid.registerIconPacks([
+      {
+        name:'logos',
+        loader:()=>fetch('https://unpkg.com/@iconify-json/logos@1.2.5/icons.json').then(res => res.json())
+      }
+    ])
+  </script>
+
+</body>
+</html>

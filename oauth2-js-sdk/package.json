@@ -1,0 +1,53 @@
+{
+  "name": "oauth2-js-sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OAuth2 SSO 单点登录客户端 SDK，支持授权码流程、Token 自动刷新、单点登出、跨应用免登录跳转",
+  "main": "dist/oauth2-js-sdk.cjs.js",
+  "module": "dist/oauth2-js-sdk.es.js",
+  "unpkg": "dist/oauth2-js-sdk.umd.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/oauth2-js-sdk.es.js",
+      "require": "./dist/oauth2-js-sdk.cjs.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.{ts,js}\""
+  },
+  "keywords": [
+    "oauth2-sso",
+    "oauth2",
+    "jwt",
+    "single-sign-on"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@types/js-cookie": "^3.0.6",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4",
+    "vite": "^5.0.0"
+  },
+  "peerDependencies": {
+    "axios": "^1.0.0"
+  },
+  "dependencies": {
+    "js-cookie": "^3.0.5"
+  }
+}

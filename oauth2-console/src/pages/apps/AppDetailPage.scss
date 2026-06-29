@@ -1,0 +1,132 @@
+@use "@/styles/variables" as *;
+
+.app-detail-page {
+  &__back {
+    margin-bottom: $spacing-sm;
+
+    .ant-btn {
+      padding-left: 0;
+      color: $text-secondary;
+      &:hover { color: $primary-color; }
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: $spacing-lg;
+    border-radius: $radius-md;
+    margin-bottom: $spacing-md;
+    box-shadow: $shadow-card;
+  }
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    background: $primary-light;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: $primary-color;
+  }
+
+  &__experience-btn {
+    background: $primary-color !important;
+
+    &:hover {
+      background: $primary-hover !important;
+    }
+  }
+
+  &__tabs {
+    .ant-tabs-nav {
+      margin-bottom: $spacing-lg;
+    }
+  }
+
+  &__config {
+    padding: 0 $spacing-sm;
+  }
+
+  &__logo-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &__logo {
+    width: 120px;
+    height: 120px;
+    background: $primary-light;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: $primary-color;
+  }
+
+  &__placeholder {
+    text-align: center;
+    padding: 80px 0;
+  }
+}
+
+.detail-section {
+  margin-bottom: 32px;
+
+  &__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+    padding-bottom: 8px;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &__body {
+    padding: $spacing-sm 0;
+  }
+}
+
+.endpoint-value {
+  .mono-code {
+    font-family: 'SF Mono', Monaco, Menlo, monospace;
+    font-size: 12px;
+    background: #f5f5f7;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: $text-primary;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.copy-icon {
+  cursor: pointer;
+  color: $text-tertiary;
+  &:hover { color: $primary-color; }
+}
+
+// ==================== K3：App Secret 行 ====================
+.app-secret-row {
+  .app-secret-code {
+    max-width: 420px;
+    user-select: all;
+    letter-spacing: 0.5px;
+  }
+  .ant-btn-text {
+    padding: 0 6px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+  }
+}

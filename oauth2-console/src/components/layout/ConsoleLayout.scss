@@ -1,0 +1,277 @@
+@use "@/styles/variables" as *;
+
+.console-layout {
+  min-height: 100vh;
+}
+
+.console-sider {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+  border-right: 1px solid $border-color;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-default;
+    border-radius: 2px;
+  }
+}
+
+.console-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px;
+  border-bottom: 1px solid $border-color;
+  cursor: pointer;
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    background: $primary-light;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: $primary-color;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 15px;
+    color: $text-primary;
+    line-height: 1.3;
+  }
+
+  &__sub {
+    font-size: 12px;
+    color: $text-secondary;
+    margin-top: 1px;
+  }
+}
+
+.console-menu {
+  padding: 8px 0;
+
+  .ant-menu-item {
+    border-radius: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+
+    &:hover,
+    &-selected {
+      background-color: $primary-light !important;
+      color: $primary-color !important;
+    }
+  }
+}
+
+.console-header {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: #fff !important;
+  border-bottom: 1px solid $border-color;
+  padding: 0 24px !important;
+  height: $header-height !important;
+  line-height: $header-height !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  &__right {
+    display: flex;
+    align-items: center;
+  }
+
+  &__link {
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      color: $primary-color !important;
+    }
+  }
+
+  &__admin {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: $radius-sm;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $primary-light;
+    }
+  }
+}
+
+.console-content {
+  margin-left: $sidebar-width;
+  min-height: calc(100vh - #{$header-height});
+  padding: 0;
+}
+
+// =====================================================================
+// 应用切换器（Header 顶部 Dropdown 下拉面板）
+// =====================================================================
+.app-switcher {
+  &__panel {
+    width: 360px;
+    background: #fff;
+    border-radius: $radius-md;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  &__header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  // 头部右侧的 OAuth2 状态 Tag：紧凑、不抢主标题视觉焦点
+  &__oauth2-tag {
+    margin: 0;
+    font-size: 11px;
+    line-height: 18px;
+  }
+
+  // OAuth2 用户卡片（已登录时展示在 panel 头部，绿色调强调"已认证"语境）
+  &__oauth2-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, rgba(82, 196, 26, 0.08) 0%, rgba(82, 196, 26, 0.02) 100%);
+    border: 1px solid rgba(82, 196, 26, 0.18);
+    border-radius: $radius-md;
+  }
+
+  &__oauth2-user-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__oauth2-user-name {
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+  }
+
+  &__oauth2-switch-btn {
+    flex-shrink: 0;
+    padding: 0 4px !important;
+    height: auto !important;
+    font-size: 12px !important;
+  }
+
+  // 应用项右侧的小圆点登录态 badge
+  // 绿色 = SSO 登录态有效，跳转免密；灰色 = 跳转后需要重新登录
+  &__badge {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px #fff;
+    transition: transform 0.15s;
+
+    &--on {
+      background: #52c41a;
+      // 轻微脉冲动效，提示这是「实时状态」
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(82, 196, 26, 0.18);
+    }
+
+    &--off {
+      background: #d9d9d9;
+    }
+  }
+
+  &__list {
+    max-height: 360px;
+    overflow-y: auto;
+    padding: 4px 0;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $border-default;
+      border-radius: 2px;
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $primary-light;
+    }
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    background: $primary-color;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid $border-color;
+    background: #fafafa;
+  }
+}

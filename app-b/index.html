@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>应用 B - OAuth2 Demo</title>
+    <!-- 引入 axios（SDK 的 peerDependency） -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- OAuth2 配置：clientId 必填，与 oauth2-console 应用列表中的 clientId 严格对应 -->
+    <meta name="oauth2-client-id" content="app-b" />
+    <!-- 如需覆盖 oauth2-server 地址，可添加：<meta name="oauth2-server-url" content="http://your-oauth2-server.com" /> -->
+    <!-- 引入 OAuth2 SDK，自动根据 meta 配置完成 PKCE 鉴权，业务代码零感知 -->
+    <script src="./public/oauth2-js-sdk.iife.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+// ==================== 变量 ====================
+$default-primary: #667eea;
+$default-primary-dark: #764ba2;
+
+// ==================== 容器 ====================
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+// ==================== 背景装饰圆 ====================
+.background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.circle1 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  top: -100px;
+  right: -100px;
+}
+
+.circle2 {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  bottom: -80px;
+  left: -80px;
+}
+
+.circle3 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  top: 40%;
+  left: 10%;
+}
+
+// ==================== 内容区 ====================
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  padding: 0 20px;
+}
+
+// ==================== Logo 区域 ====================
+.logoArea {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logoIcon {
+  font-size: 56px;
+  color: #fff;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.brandLogo {
+  height: 64px;
+  max-width: 200px;
+  object-fit: contain;
+  margin: 0 auto 12px;
+  display: block;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.logoTitle {
+  color: #fff !important;
+  margin: 8px 0 4px !important;
+  font-size: 22px !important;
+}
+
+.logoSubtitle {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+// ==================== 卡片 ====================
+.card {
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+}
+
+// ==================== 按钮 ====================
+.loginButton {
+  border: none !important;
+  height: 44px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+}
+
+// ==================== MFA ====================
+.mfaTitle {
+  text-align: center;
+  margin-bottom: 8px;
+  color: #1a1a2e;
+}
+
+.mfaDescription {
+  text-align: center;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.mfaActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mfaTotpHint {
+  font-size: 12px;
+}
+
+.mfaTotpInput {
+  text-align: center;
+  letter-spacing: 4px;
+  font-family: monospace;
+}
+
+// ==================== 注册提示 ====================
+.registerHint {
+  font-size: 12px;
+}
+
+// ==================== 底部 ====================
+.footer {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.footerText {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.footerLink {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+}
+
+.footerDivider {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+// ==================== Alert ====================
+.authAlert {
+  margin-bottom: 24px;
+  border-radius: 8px;
+}
+
+.errorAlert {
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+
+.registerInfoAlert {
+  margin-bottom: 16px;
+}
