@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, Spin, Result, Button, Typography, Alert } from 'antd';
-import { CloudOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
-import { oauth2Exchange } from '../../api';
+import { Card, Spin, Result, Button, Typography, Alert, Space } from 'antd';
+import { CloudOutlined, SafetyCertificateOutlined, WarningFilled } from '@ant-design/icons';
+import { oauth2Exchange, oauth2GlobalLogout, OAUTH2_LOGIN_ENTRY_URL } from '../../api';
 import { saveAuth } from '../../utils/auth';
 import './ConsoleLoginPage.scss';
 
@@ -41,13 +41,23 @@ export default function OAuth2CallbackPage() {
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
 
-    // oauth2-server 透传过来的错误（如：access_denied / 应用禁用）
+    // oauth2-server 透传过来的错误（如：access_denied / 应用禁用 / invalid_client）
     if (error) {
       setStatus('error');
-      setErrorInfo({
-        title: '授权失败',
-        description: errorDescription || error,
-      });
+      if (error === 'access_denied') {
+        setErrorInfo({
+          title: '无管理员权限',
+          description:
+            errorDescription || '当前账号不具备控制台管理员权限，请使用管理员账号重新登录。',
+          type: 'access_denied',
+        });
+      } else {
+        setErrorInfo({
+          title: '授权失败',
+          description: errorDescription || error,
+          type: 'general',
+        });
+      }
       return;
     }
 
@@ -79,9 +89,13 @@ export default function OAuth2CallbackPage() {
       })
       .catch((err) => {
         setStatus('error');
+        const errMsg = err?.error_description || err?.message || '后端兑换 Token 失败，请重新登录';
+        const isForbidden =
+          errMsg.includes('admin') || errMsg.includes('权限') || errMsg.includes('角色');
         setErrorInfo({
-          title: 'OAuth2 登录失败',
-          description: err?.error_description || err?.message || '后端兑换 Token 失败，请重新登录',
+          title: isForbidden ? '无管理员权限' : 'OAuth2 登录失败',
+          description: errMsg,
+          type: isForbidden ? 'access_denied' : 'general',
         });
       });
   }, [searchParams, navigate]);
@@ -127,18 +141,44 @@ export default function OAuth2CallbackPage() {
               <Alert
                 type="error"
                 showIcon
+                icon={errorInfo?.type === 'access_denied' ? <WarningFilled /> : undefined}
                 message={errorInfo?.title}
                 description={errorInfo?.description}
                 style={{ marginBottom: 16 }}
               />
-              <Button
-                type="primary"
-                block
-                size="large"
-                onClick={() => navigate('/login', { replace: true })}
-              >
-                返回登录页
-              </Button>
+              {errorInfo?.type === 'access_denied' ? (
+                <Space direction="vertical" style={{ width: '100%' }} size={12}>
+                  <Alert
+                    type="info"
+                    showIcon
+                    message="如何解决？"
+                    description="OAuth2 控制台仅限 admin 角色用户访问。请使用管理员账号登录，或联系系统管理员为您分配 admin 角色。"
+                  />
+                  <Button
+                    type="primary"
+                    block
+                    size="large"
+                    onClick={async () => {
+                      await oauth2GlobalLogout().catch(() => {});
+                      window.location.href = OAUTH2_LOGIN_ENTRY_URL;
+                    }}
+                  >
+                    切换管理员账号重新登录
+                  </Button>
+                  <Button block size="large" onClick={() => navigate('/login', { replace: true })}>
+                    返回登录页（使用账号密码）
+                  </Button>
+                </Space>
+              ) : (
+                <Button
+                  type="primary"
+                  block
+                  size="large"
+                  onClick={() => navigate('/login', { replace: true })}
+                >
+                  返回登录页
+                </Button>
+              )}
             </>
           )}
         </Card>

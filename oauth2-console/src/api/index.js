@@ -71,23 +71,24 @@ export const OAUTH2_LOGIN_ENTRY_URL = `${OAUTH2_SERVER}/v1/api/console/admin/oau
  * - 失败不抛异常：哪怕后端不可达也允许前端继续清本地态，避免用户被"登出失败"卡住
  */
 export async function oauth2GlobalLogout() {
-  const token = localStorage.getItem(TOKEN_STORAGE_KEY) || '';
-
   // 在发起请求前先广播一条 oauth2-logout 消息，让同源页面（其它 Tab、当前页面的其它组件）
   // 立即进入"已登出"视觉状态，无需等待 oauth2-server 响应（请求失败也已广播过，不影响）
   broadcastOAuth2Logout('console.logout.request');
 
   try {
-    const resp = await fetch(`${OAUTH2_SERVER}/v1/oauth/logout`, {
-      method: 'POST',
+    // B1 修复：改用 GET + redirect:'manual'（替代 POST）
+    // SameSite=Lax 的 httpOnly Cookie 在跨端口 POST fetch 时可能不被浏览器附带，
+    // 但 GET 请求属于"安全方法"，SameSite=Lax 在跨端口同站场景也能正常发送 Cookie。
+    // redirect:'manual' 阻止 fetch 跟随 302 重定向，仅取 Set-Cookie 响应头完成本地清除。
+    await fetch(`${OAUTH2_SERVER}/v1/oauth/logout`, {
+      method: 'GET',
       credentials: 'include',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      redirect: 'manual',
     });
-    return await resp.json().catch(() => ({}));
   } catch (err) {
     console.warn('[oauth2GlobalLogout] 调用失败，继续执行本地清理:', err);
-    return null;
   }
+  return null;
 }
 
 // ==================== OAuth2 登出广播（B+：响应式 badge）====================

@@ -205,7 +205,7 @@ export default function UsersPage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `users_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      link.download = `users_${Date.now()}.xlsx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

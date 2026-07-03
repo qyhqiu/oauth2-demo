@@ -17,19 +17,11 @@ import {
   UserOutlined,
   LockOutlined,
   SafetyCertificateOutlined,
-  CloudOutlined,
   CheckCircleFilled,
-  SwapOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRequest } from 'ahooks';
-import {
-  adminLogin,
-  getOAuth2Config,
-  oauth2GlobalLogout,
-  trackOAuth2Session,
-  OAUTH2_LOGIN_ENTRY_URL,
-} from '../../api';
+import { adminLogin, trackOAuth2Session } from '../../api';
 import { saveAuth } from '../../utils/auth';
 import './ConsoleLoginPage.scss';
 
@@ -66,45 +58,22 @@ export default function ConsoleLoginPage() {
     },
   });
 
-  // 拉 OAuth2 配置（决定是否展示"使用 OAuth2 登录"按钮）
-  // 后端不可用时静默降级（仅展示账号密码登录）
-  const { data: oauth2ConfigResp } = useRequest(getOAuth2Config, {
-    onError: () => {
-      /* 无 OAuth2 配置时按钮自动隐藏 */
+  // 检测 OAuth2 Session —— 管理员已登录时提供「以此身份继续」快捷入口
+  const { data: oauth2SessionResp, loading: oauth2SessionLoading } = useRequest(
+    trackOAuth2Session,
+    {
+      cacheKey: 'console-login-oauth2-session',
+      staleTime: 30 * 1000,
     },
-  });
-  const oauth2Enabled = oauth2ConfigResp?.data?.enabled === true;
-
-  // A+：检测 OAuth2 Session —— 已登录用户进入登录页时直接给「以此身份继续」快捷入口
-  // 设计要点：
-  // - mount 时自动触发（与 SDK 配置加载并行，不阻塞表单渲染）
-  // - 失败兜底为 { session: null }，UI 自动隐藏 OAuth2 卡片
-  // - mutate 在切换账号时立即把 cache 改空，UI 即时反映，不等 oauth2GlobalLogout 网络往返
-  const {
-    data: oauth2SessionResp,
-    loading: oauth2SessionLoading,
-    mutate: mutateOAuth2Session,
-  } = useRequest(trackOAuth2Session, {
-    cacheKey: 'console-login-oauth2-session',
-    staleTime: 30 * 1000,
-  });
+  );
   const oauth2SessionUser = oauth2SessionResp?.session ? oauth2SessionResp.userInfo : null;
+  const isSessionUserAdmin = oauth2SessionUser && oauth2SessionUser.role === 'admin';
 
   const handleContinueAsSsoUser = () => {
-    // 走完整 OAuth2 登录链路：浏览器跳转到 OAuth2 入口，oauth2-server 凭已存在的 OAuth2 Cookie
-    // 直接 302 回控制台 callback 完成换 token，全程无需重新输入密码
     if (redirectTo && redirectTo !== '/home') {
       sessionStorage.setItem('oauth2_redirect_to', redirectTo);
     }
-    window.location.href = OAUTH2_LOGIN_ENTRY_URL;
-  };
-
-  const handleSwitchSsoAccount = async () => {
-    // 立即把本地 OAuth2 Session 视为已登出，UI 即时切回密码登录表单
-    mutateOAuth2Session({ session: null });
-    // 异步清除 oauth2-server 端的 OAuth2 Cookie（失败也不阻塞用户输密码）
-    await oauth2GlobalLogout();
-    messageApi.info('已退出当前 OAuth2 身份，请使用账号密码登录');
+    window.location.href = `${import.meta.env.VITE_OAUTH2_SERVER || 'http://localhost:3000'}/v1/api/console/admin/oauth2-login`;
   };
 
   const handleSubmit = async (values) => {
@@ -113,15 +82,6 @@ export default function ConsoleLoginPage() {
     } catch {
       // 错误信息由下方 Alert 展示，无需弹 message
     }
-  };
-
-  const handleSsoLogin = () => {
-    // 把守卫拦截前的目标路径塞进 sessionStorage，回调页登录成功后取出回跳
-    if (redirectTo && redirectTo !== '/home') {
-      sessionStorage.setItem('oauth2_redirect_to', redirectTo);
-    }
-    // 走浏览器原生导航触发后端 302 链路（不能用 axios）
-    window.location.href = OAUTH2_LOGIN_ENTRY_URL;
   };
 
   const fillTestAccount = () => {
@@ -163,7 +123,7 @@ export default function ConsoleLoginPage() {
             />
           )}
 
-          {/* A+：检测到 OAuth2 已登录 → 顶部展示快捷入口卡片，让用户「秒进」控制台 */}
+          {/* OAuth2 登录态检测 */}
           {oauth2SessionLoading ? (
             <div className="console-login-page__oauth2-card console-login-page__oauth2-card--loading">
               <Spin size="small" />
@@ -171,17 +131,16 @@ export default function ConsoleLoginPage() {
                 正在检测 OAuth2 登录态…
               </Text>
             </div>
-          ) : oauth2SessionUser ? (
+          ) : oauth2SessionUser && isSessionUserAdmin ? (
+            /* 管理员已登录：提供快捷入口 */
             <div className="console-login-page__oauth2-card">
               <CheckCircleFilled className="console-login-page__oauth2-card-icon" />
               <div className="console-login-page__oauth2-card-meta">
                 <div className="console-login-page__oauth2-card-title">
                   <Text strong>检测到 OAuth2 已登录</Text>
-                  {oauth2SessionUser.role && (
-                    <Tag color="purple" style={{ marginLeft: 8, fontSize: 11, lineHeight: '16px' }}>
-                      {oauth2SessionUser.role}
-                    </Tag>
-                  )}
+                  <Tag color="purple" style={{ marginLeft: 8, fontSize: 11, lineHeight: '16px' }}>
+                    admin
+                  </Tag>
                 </div>
                 <div className="console-login-page__oauth2-card-user">
                   <Avatar
@@ -205,14 +164,6 @@ export default function ConsoleLoginPage() {
                   className="console-login-page__oauth2-card-continue"
                 >
                   以此身份继续
-                </Button>
-                <Button
-                  type="link"
-                  size="small"
-                  icon={<SwapOutlined />}
-                  onClick={handleSwitchSsoAccount}
-                >
-                  切换账号
                 </Button>
               </div>
             </div>
@@ -245,26 +196,6 @@ export default function ConsoleLoginPage() {
               </Button>
             </Form.Item>
           </Form>
-
-          {oauth2Enabled && (
-            <>
-              <Divider plain>
-                <Text type="secondary" style={{ fontSize: 12 }}>
-                  或
-                </Text>
-              </Divider>
-              <Button
-                block
-                size="large"
-                icon={<CloudOutlined />}
-                onClick={handleSsoLogin}
-                disabled={loading}
-                className="console-login-page__oauth2-btn"
-              >
-                使用 OAuth2 单点登录
-              </Button>
-            </>
-          )}
 
           <Divider plain>
             <Text type="secondary" style={{ fontSize: 12 }}>

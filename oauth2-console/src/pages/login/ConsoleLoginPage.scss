@@ -91,28 +91,65 @@
     }
   }
 
-  // OAuth2 已登录提示卡（绿色，强调"无需输密码即可进入"）
+  // OAuth2 已登录提示卡
   &__oauth2-card {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     padding: 14px 16px;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, rgba(82, 196, 26, 0.08) 0%, rgba(82, 196, 26, 0.02) 100%);
-    border: 1px solid rgba(82, 196, 26, 0.25);
     border-radius: 10px;
+
+    // 管理员卡片（绿色，强调"无需输密码即可进入"）
+    &:not(&--loading):not(&--warn) {
+      background: linear-gradient(135deg, rgba(82, 196, 26, 0.08) 0%, rgba(82, 196, 26, 0.02) 100%);
+      border: 1px solid rgba(82, 196, 26, 0.25);
+    }
 
     &--loading {
       justify-content: center;
+      align-items: center;
       background: #fafafa;
-      border-color: #f0f0f0;
+      border: 1px solid #f0f0f0;
+    }
+
+    // 非管理员警告卡片（橙色背景 + 橙色边框，纵向布局避免内容被挤压）
+    &--warn {
+      flex-direction: column;
+      gap: 10px;
+      background: linear-gradient(
+        135deg,
+        rgba(250, 173, 20, 0.1) 0%,
+        rgba(250, 173, 20, 0.03) 100%
+      );
+      border: 1px solid rgba(250, 173, 20, 0.4);
+
+      .console-login-page__oauth2-card-actions {
+        flex-direction: row;
+      }
     }
   }
 
   &__oauth2-card-icon {
-    font-size: 28px;
-    color: #52c41a;
+    font-size: 24px;
     flex-shrink: 0;
+    margin-top: 2px;
+
+    // 管理员：绿色图标
+    &:not(&--warn) {
+      color: #52c41a;
+    }
+
+    &--warn {
+      color: #faad14;
+    }
+  }
+
+  // 警告卡片内的标题行（图标 + 文字横向排列）
+  &__oauth2-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   &__oauth2-card-meta {

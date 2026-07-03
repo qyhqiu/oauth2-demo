@@ -120,15 +120,14 @@ export default function ConsoleLayout({ children }) {
   const handleUserMenuClick = ({ key }) => {
     if (key === 'logout') {
       Modal.confirm({
-        title: '确认退出登录？',
-        content: '退出后将同步注销所有已登录的业务应用（单点登出）',
+        title: '确认退出控制台？',
+        content: '仅退出当前控制台登录态，不影响已登录的业务应用。',
         okText: '退出',
         okButtonProps: { danger: true },
         cancelText: '取消',
-        onOk: async () => {
-          // 单点登出：先调用 oauth2-server 全局登出端点（撤销该管理员在所有业务应用的 access_token
-          // + 清掉 OAuth2 Session Cookie），再清本地登录态。即便后端不可达也继续清本地，避免卡住。
-          await oauth2GlobalLogout();
+        onOk: () => {
+          // 仅清除控制台自身的 JWT 登录态，不动共享的 OAuth2 Session Cookie
+          // （oauth2_session 是 localhost:3000 域名下全应用共用的，控制台无权单方面清除）
           clearAuth();
           navigate('/login', { replace: true });
         },

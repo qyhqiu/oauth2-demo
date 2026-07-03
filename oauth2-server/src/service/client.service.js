@@ -326,12 +326,17 @@ function resolveGrantedScope(requestedScope, registeredScopes) {
  */
 async function ensureConsoleClientRegistered(consoleOrigin) {
   const CONSOLE_CLIENT_ID = 'console-app';
+  const consoleCallbackUri = `${consoleOrigin}/oauth2-callback`;
   const desired = {
     clientId: CONSOLE_CLIENT_ID,
     // K3：控制台是 SPA（运行在浏览器，无法保密 secret），强制走 PKCE
     clientType: 'spa',
     name: 'OAuth2 控制台',
     origin: consoleOrigin,
+    // B3 修复：必须注册 redirectUris，否则 validateClient 在 redirectUris 非空时走严格匹配会失败
+    // 控制台 OAuth2 登录流程：/admin/oauth2-login → /oauth/authorize?redirect_uri=<callback>
+    // authorize 端点调用 validateClient 校验 redirect_uri 是否在注册列表中
+    redirectUris: [consoleCallbackUri],
     description: '控制台自身（系统应用，请勿删除）',
     scope: ['openid', 'profile'],
     pkce: true,
@@ -362,22 +367,41 @@ async function ensureConsoleClientRegistered(consoleOrigin) {
     logger.info(`🆕 已自动注册控制台 OAuth2 client：[${CONSOLE_CLIENT_ID}] -> ${consoleOrigin}`);
     return;
   }
-  // origin 变更（如改端口）时自动同步，避免手动维护
+
+  // 增量修复：补齐缺失/过期的字段（不覆盖已有正确数据）
+  const patch = {};
+
+  // origin 变更（如改端口）时自动同步
   if (existing.origin !== consoleOrigin) {
-    await Client.updateOne({ clientId: CONSOLE_CLIENT_ID }, { $set: { origin: consoleOrigin } });
+    patch.origin = consoleOrigin;
+    // origin 变了，redirectUris 也要同步更新
+    patch.redirectUris = [consoleCallbackUri];
     logger.info(`🔄 控制台 client origin 已同步：${existing.origin} → ${consoleOrigin}`);
   }
+
+  // B3 修复：确保 redirectUris 包含正确的回调地址（兜底旧数据/手动删改）
+  const existingUris = existing.redirectUris || [];
+  const hasValidCallback = existingUris.some(
+    (uri) => uri === consoleCallbackUri || uri.endsWith('/oauth2-callback'),
+  );
+  if (!hasValidCallback) {
+    patch.redirectUris = [
+      ...new Set([...(patch.redirectUris || existingUris), consoleCallbackUri]),
+    ];
+    logger.info(`🔧 控制台 client redirectUris 已补齐：${consoleCallbackUri}`);
+  }
+
   // K3 兼容：老数据缺 clientType / clientSecret 时补齐
-  const patch = {};
   if (!existing.clientType) {
     patch.clientType = 'spa';
   }
   if (!existing.clientSecret) {
     patch.clientSecret = generateAppSecret();
   }
+
   if (Object.keys(patch).length > 0) {
     await Client.updateOne({ clientId: CONSOLE_CLIENT_ID }, { $set: patch });
-    logger.info(`🔧 控制台 client 已补齐 K3 字段：${Object.keys(patch).join(', ')}`);
+    logger.info(`🔧 控制台 client 已补齐字段：${Object.keys(patch).join(', ')}`);
   }
 }
 

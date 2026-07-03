@@ -449,6 +449,21 @@ async function getLoginLogs(req, res) {
       const regex = { $regex: req.query.keyword, $options: 'i' };
       filter.$or = [{ username: regex }, { ip: regex }];
     }
+    // 日期范围过滤
+    const { startDate, endDate } = req.query;
+    const dateRange = {};
+    if (startDate) {
+      dateRange.$gte = new Date(startDate);
+    }
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      dateRange.$lte = end;
+    }
+    if (Object.keys(dateRange).length > 0) {
+      filter.loggedInAt = dateRange;
+    }
+
     const total = await LoginLog.countDocuments(filter);
     const list = await LoginLog.find(filter)
       .sort({ loggedInAt: -1 })
@@ -478,9 +493,6 @@ async function exportLoginLogs(req, res) {
       const end = new Date(endDate);
       end.setHours(23, 59, 59, 999);
       dateRange.$lte = end;
-    }
-    if (!startDate && !endDate) {
-      dateRange.$gte = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     }
     if (Object.keys(dateRange).length > 0) {
       filter.loggedInAt = dateRange;
@@ -548,7 +560,7 @@ async function exportLoginLogs(req, res) {
     XLSX.utils.book_append_sheet(workbook, worksheet, '审计日志');
     const xlsxBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
-    const filename = `audit-logs-${clientId}-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const filename = `audit-logs-${clientId}-${Date.now()}.xlsx`;
     res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.set('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(xlsxBuffer);
@@ -1429,10 +1441,7 @@ async function exportUsers(req, res) {
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename=users_${new Date().toISOString().slice(0, 10)}.xlsx`,
-    );
+    res.setHeader('Content-Disposition', `attachment; filename=users_${Date.now()}.xlsx`);
     res.send(xlsxBuffer);
   } catch (err) {
     res.status(500).json({ code: 500, data: null, message: err.message });

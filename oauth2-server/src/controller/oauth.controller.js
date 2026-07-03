@@ -540,6 +540,12 @@ async function loginAndAuthorize(req, res) {
   logger.info(`✅ 用户 [${username}] 登录成功，生成 Authorization Code`);
   writeLoginLog(req, { clientId, username, userId, status: 'success' });
 
+  // 更新登录统计
+  User.findByIdAndUpdate(userId, {
+    $inc: { loginsCount: 1 },
+    $set: { lastLogin: new Date(), lastIP: req.ip || '' },
+  }).catch((err) => logger.error('更新用户登录统计失败:', err.message));
+
   const callbackUrl = new URL(redirect_uri);
   callbackUrl.searchParams.set('code', code);
   if (state) {
@@ -674,6 +680,12 @@ async function mfaVerify(req, res) {
 
   logger.info(`✅ 用户 [${username}] MFA 验证通过，颁发 Authorization Code`);
   writeLoginLog(req, { clientId, username, userId, status: 'success' });
+
+  // 更新登录统计
+  User.findByIdAndUpdate(userId, {
+    $inc: { loginsCount: 1 },
+    $set: { lastLogin: new Date(), lastIP: req.ip || '' },
+  }).catch((err) => logger.error('更新用户登录统计失败:', err.message));
 
   const callbackUrl = new URL(redirect_uri);
   callbackUrl.searchParams.set('code', authCode);
